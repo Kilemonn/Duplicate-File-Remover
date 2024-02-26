@@ -22,9 +22,6 @@ func main() {
 
 	fmt.Println("When duplicate files are detected, files will be taken from the directories in the order they were provided.")
 
-	fmt.Println(consts.INPUT_DIR, ":", argList.Args)
-	fmt.Println(consts.SHORT_OUTPUT_DIR, ":", *shortOutputDir)
-
 	err := files.CreateOutputDirectory(*shortOutputDir)
 	if err != nil {
 		fmt.Printf("Failed to create output directory [%s]. Error: %s.\n", *shortOutputDir, err.Error())
