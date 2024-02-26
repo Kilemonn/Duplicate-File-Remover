@@ -45,3 +45,5 @@ output/
     |--> image2.jpg (since content is unique across both directories)
     |--> test1.png (because the content is equal. Since "input1" was specified first in the command line arguments its file name will take precedence)
 ```
+
+**The contents of `input1` and `input2` remain untouched at the end of the file copying.**
