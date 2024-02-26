@@ -13,3 +13,8 @@ You can get application usage by using `-h` or `--help`.
 E.g.
 
 > ./duplicate-file-merger -i input/directory/1 -i input/directory/2 -o output/directory
+
+## Installation
+
+This application can be installed onto the command line with the following command:
+> go install github.com/Kilemonn/Duplicate-File-Merger@latest
