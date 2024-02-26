@@ -1,11 +1,12 @@
 package main
 
 import (
-	argument_list "duplicate-file-merger/argument-list"
-	"duplicate-file-merger/consts"
-	"duplicate-file-merger/files"
 	"flag"
 	"fmt"
+
+	argument_list "github.com/Kilemonn/Duplicate-File-Merger/argument-list"
+	"github.com/Kilemonn/Duplicate-File-Merger/consts"
+	"github.com/Kilemonn/Duplicate-File-Merger/files"
 )
 
 func main() {
