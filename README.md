@@ -34,7 +34,7 @@ input2/
 ```
 
 After running the following command:
-> ./Duplicate-File-Remover.exe -i input1/ -i input2/ -o output/
+> Duplicate-File-Remover.exe -i input1/ -i input2/ -o output/
 
 The output directory will contain the following files:
 ```
