@@ -17,7 +17,7 @@ func main() {
 	flag.Parse()
 
 	if len(argList.Args) < 2 {
-		fmt.Printf("Please provide multiple input directories as command-line flag [-%s], atleast 2 are required.", consts.SHORT_INPUT_DIR)
+		fmt.Printf("Please provide multiple input directories as command-line flag [-%s], atleast 2 are required.\n", consts.SHORT_INPUT_DIR)
 		return
 	}
 
