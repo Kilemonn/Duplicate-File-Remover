@@ -4,9 +4,9 @@ import (
 	"flag"
 	"fmt"
 
-	argument_list "github.com/Kilemonn/Duplicate-File-Merger/argument-list"
-	"github.com/Kilemonn/Duplicate-File-Merger/consts"
-	"github.com/Kilemonn/Duplicate-File-Merger/files"
+	argument_list "github.com/Kilemonn/Duplicate-File-Remover/argument-list"
+	"github.com/Kilemonn/Duplicate-File-Remover/consts"
+	"github.com/Kilemonn/Duplicate-File-Remover/files"
 )
 
 func main() {

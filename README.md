@@ -1,4 +1,4 @@
-# Duplicate-File-Merger
+# Duplicate-File-Remover
 A command-line tool that takes input directories and create an output directory containing only unique files from the provided input directories. The files are determined as being unique based on its content hash.
 
 This program will only create a new specified output directory. Or if none is provided a directory in the path of the running application called `output`.
@@ -12,12 +12,12 @@ You can get application usage by using `-h` or `--help`.
 
 E.g.
 
-> ./Duplicate-File-Merger.exe -i input/directory/1 -i input/directory/2 -o output/directory
+> ./Duplicate-File-Remover.exe -i input/directory/1 -i input/directory/2 -o output/directory
 
 ## Installation
 
 This application can be installed onto the command line with the following command:
-> go install github.com/Kilemonn/Duplicate-File-Merger@latest
+> go install github.com/Kilemonn/Duplicate-File-Remover@latest
 
 ## Example
 
@@ -35,7 +35,7 @@ input2/
 ```
 
 After running the following command:
-> ./Duplicate-File-Merger.exe -i input1/ -i input2/ -o output/
+> ./Duplicate-File-Remover.exe -i input1/ -i input2/ -o output/
 
 The output directory will contain the following files:
 ```
