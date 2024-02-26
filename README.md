@@ -11,3 +11,5 @@ Optionally the output directory can be provided with `-o`.
 You can get application usage by using `-h` or `--help`.
 
 E.g.
+
+> ./duplicate-file-merger -i input/directory/1 -i input/directory/2 -o output/directory
