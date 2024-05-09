@@ -13,6 +13,7 @@ func main() {
 	var argList argument_list.ArgumentList
 	flag.Var(&argList, consts.SHORT_INPUT_DIR, "Input directories, please provide the flag multiple times for as many input directories as you require.")
 	shortOutputDir := flag.String(consts.SHORT_OUTPUT_DIR, consts.DEFAULT_OUTPUT_DIR, "Output directory")
+	retainModifiedTime := flag.Bool(consts.RETAIN_MODIFIED_DATE, false, "Retains the modified date of the original file in the copied destination files. This can be required if you wish the output files modified date to match that of the original file.")
 
 	flag.Parse()
 
@@ -29,7 +30,7 @@ func main() {
 		return
 	}
 
-	err = files.MergeFileDirs(argList.Args, *shortOutputDir)
+	err = files.MergeFileDirs(argList.Args, *shortOutputDir, *retainModifiedTime)
 	if err != nil {
 		fmt.Printf("Error encountered. %s\n", err.Error())
 	}

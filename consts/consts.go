@@ -5,4 +5,6 @@ const (
 	DEFAULT_OUTPUT_DIR = "./output"
 
 	SHORT_INPUT_DIR = "i"
+
+	RETAIN_MODIFIED_DATE = "d"
 )
