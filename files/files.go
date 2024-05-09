@@ -8,19 +8,20 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"time"
 )
 
-func MergeFileDirs(inputDirs []string, outputDir string) (err error) {
+func MergeFileDirs(inputDirs []string, outputDir string, retainModifiedTime bool) (err error) {
 	var hashes map[string]bool = make(map[string]bool)
 	for _, dir := range inputDirs {
 		fmt.Printf("Merging files from dir [%s] into [%s].\n", dir, outputDir)
-		err = mergeFileDir(hashes, dir, outputDir)
+		err = mergeFileDir(hashes, dir, outputDir, retainModifiedTime)
 	}
 
 	return
 }
 
-func mergeFileDir(hashes map[string]bool, inputDir string, outputDir string) (err error) {
+func mergeFileDir(hashes map[string]bool, inputDir string, outputDir string, retainModifiedTime bool) (err error) {
 	dirs, err := os.ReadDir(inputDir)
 	if err != nil {
 		fmt.Printf("Encountered error when reading directory [%s]. %s.\n", inputDir, err.Error())
@@ -29,16 +30,19 @@ func mergeFileDir(hashes map[string]bool, inputDir string, outputDir string) (er
 
 	for _, dir := range dirs {
 		if !dir.IsDir() {
-			inputFile := inputDir + "/" + dir.Name()
+			inputFile := filepath.Join(inputDir, dir.Name())
 			hash, bytes, err := getContentHash(inputFile)
 			if err != nil {
 				fmt.Printf("Failed to generate content hash for file [%s].\n", inputFile)
 			}
 
 			if _, exists := hashes[hash]; !exists {
-				outputFile := outputDir + "/" + dir.Name()
+				outputFile := filepath.Join(outputDir, dir.Name())
 				fmt.Printf("Entry for file [%s] (hash %s) does not exist. Moving file to %s.\n", dir.Name(), hash, outputFile)
 				os.WriteFile(outputFile, bytes, os.ModeAppend)
+				if retainModifiedTime {
+					retainModifiedTimeOfFile(dir, outputFile)
+				}
 				hashes[hash] = true
 			} else {
 				fmt.Printf("Entry for file [%s] (hash %s) already exists. File does not need to be copied.\n", inputFile, hash)
@@ -47,6 +51,15 @@ func mergeFileDir(hashes map[string]bool, inputDir string, outputDir string) (er
 	}
 
 	return
+}
+
+func retainModifiedTimeOfFile(dir fs.DirEntry, outputFile string) {
+	originalFileInfo, err := dir.Info()
+	if err != nil {
+		fmt.Printf("Failed to retrieve info for file %s. Skipping modification date change for this file.\n", dir.Name())
+	} else {
+		os.Chtimes(outputFile, time.Time{}, originalFileInfo.ModTime())
+	}
 }
 
 func getContentHash(filePath string) (hash string, bytes []byte, err error) {
