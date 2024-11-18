@@ -38,7 +38,7 @@ func mergeFileDir(hashes map[string]bool, inputDir string, outputDir string, ret
 
 			if _, exists := hashes[hash]; !exists {
 				outputFile := filepath.Join(outputDir, dir.Name())
-				fmt.Printf("Entry for file [%s] (hash %s) does not exist. Moving file to %s.\n", dir.Name(), hash, outputFile)
+				fmt.Printf("Entry for file [%s] (hash %s) does not exist. Creating copy of file to [%s].\n", dir.Name(), hash, outputFile)
 				os.WriteFile(outputFile, bytes, os.ModeAppend)
 				if retainModifiedTime {
 					retainModifiedTimeOfFile(dir, outputFile)
