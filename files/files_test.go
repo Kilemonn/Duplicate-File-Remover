@@ -9,6 +9,8 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+// WithTempDir creates a temp directory and provides it to the provided function as an argument.
+// The temp dir is removed automatically after the called func.
 func WithTempDir(t *testing.T, testFunc func(dirName string)) {
 	dirName, err := os.MkdirTemp("", "")
 	require.NoError(t, err)
@@ -17,6 +19,7 @@ func WithTempDir(t *testing.T, testFunc func(dirName string)) {
 	testFunc(dirName)
 }
 
+// CreateFileWithContent creates a file at the provided fileName path with the provided content string
 func CreateFileWithContent(t *testing.T, fileName string, content string) {
 	require.NoError(t, os.WriteFile(fileName, []byte(content), 0666))
 }
@@ -118,8 +121,8 @@ func TestFileMerge_DifferentNameAndDifferentContent(t *testing.T) {
 	})
 }
 
-// Ensure that when the same file name already exists with the same content that it will NOT be copied into the
-// output directory.
+// Ensure that when the same file name already exists with the same content that it will copy BOTH versions of the file
+// even if there is a conflicting filename.
 func TestFileMerge_SameNameDifferentContent(t *testing.T) {
 	contentPrefix := "TestFileMerge_SameNameDifferentContent"
 	fileName := "test.txt"
@@ -140,7 +143,7 @@ func TestFileMerge_SameNameDifferentContent(t *testing.T) {
 				require.NoError(t, MergeFileDirs([]string{input1, input2}, outputDir, false))
 				dirs, err := os.ReadDir(outputDir)
 				require.NoError(t, err)
-				require.Equal(t, 1, len(dirs))
+				require.Equal(t, 2, len(dirs))
 
 				_, err = os.Stat(filepath.Join(outputDir, fileName))
 				require.NoError(t, err)
@@ -148,6 +151,14 @@ func TestFileMerge_SameNameDifferentContent(t *testing.T) {
 				hash3, _, err := getContentHash(filepath.Join(outputDir, fileName))
 				require.NoError(t, err)
 				require.Equal(t, hash1, hash3)
+
+				duplicateFileName := "test (1).txt"
+				_, err = os.Stat(filepath.Join(outputDir, duplicateFileName))
+				require.NoError(t, err)
+
+				hash4, _, err := getContentHash(filepath.Join(outputDir, duplicateFileName))
+				require.NoError(t, err)
+				require.Equal(t, hash2, hash4)
 			})
 		})
 	})

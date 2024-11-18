@@ -8,6 +8,7 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 )
 
@@ -37,7 +38,7 @@ func mergeFileDir(hashes map[string]bool, inputDir string, outputDir string, ret
 			}
 
 			if _, exists := hashes[hash]; !exists {
-				outputFile := filepath.Join(outputDir, dir.Name())
+				outputFile := filepath.Join(outputDir, getOutputPath(outputDir, dir.Name()))
 				fmt.Printf("Entry for file [%s] (hash %s) does not exist. Creating copy of file to [%s].\n", dir.Name(), hash, outputFile)
 				os.WriteFile(outputFile, bytes, os.ModeAppend)
 				if retainModifiedTime {
@@ -51,6 +52,30 @@ func mergeFileDir(hashes map[string]bool, inputDir string, outputDir string, ret
 	}
 
 	return
+}
+
+// Check for colliding file names and make sure we return a filename that exists in the output directory.
+// Iterating over file names "test (i).txt" where i will increment for each file with the same name.
+func getOutputPath(dir string, file string) string {
+	if _, err := os.Stat(filepath.Join(dir, file)); os.IsNotExist(err) {
+		return file
+	}
+
+	ext := ""
+	prefix := ""
+	if dot := strings.LastIndex(file, "."); dot != -1 {
+		ext = file[dot:]
+		prefix = file[:dot]
+	} else {
+		prefix = file
+	}
+
+	for i := 1; ; i++ {
+		tempFileName := fmt.Sprintf("%s (%d)%s", prefix, i, ext)
+		if _, err := os.Stat(filepath.Join(dir, tempFileName)); os.IsNotExist(err) {
+			return tempFileName
+		}
+	}
 }
 
 func retainModifiedTimeOfFile(dir fs.DirEntry, outputFile string) {
