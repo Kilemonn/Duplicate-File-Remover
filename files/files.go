@@ -12,6 +12,11 @@ import (
 	"time"
 )
 
+const (
+	// The default linux file permission that new files are created with
+	DEFAULT_FILE_PERM = 0666
+)
+
 func MergeFileDirs(inputDirs []string, outputDir string, retainModifiedTime bool) (err error) {
 	var hashes map[string]bool = make(map[string]bool)
 	for _, dir := range inputDirs {
@@ -40,7 +45,10 @@ func mergeFileDir(hashes map[string]bool, inputDir string, outputDir string, ret
 			if _, exists := hashes[hash]; !exists {
 				outputFile := filepath.Join(outputDir, getOutputPath(outputDir, dir.Name()))
 				fmt.Printf("Entry for file [%s] (hash %s) does not exist. Creating copy of file to [%s].\n", dir.Name(), hash, outputFile)
-				os.WriteFile(outputFile, bytes, os.ModeAppend)
+				err = os.WriteFile(outputFile, bytes, DEFAULT_FILE_PERM)
+				if err != nil {
+					fmt.Printf("Failed to write file [%s] due to error [%s].\n", outputFile, err.Error())
+				}
 				if retainModifiedTime {
 					retainModifiedTimeOfFile(dir, outputFile)
 				}
@@ -114,7 +122,7 @@ func CreateOutputDirectory(outputDir string) (err error) {
 		dir = homeDir + dir
 	}
 
-	err = os.Mkdir(dir, fs.FileMode(os.O_APPEND))
+	err = os.Mkdir(dir, DEFAULT_FILE_PERM)
 	if err != nil && !errors.Is(err, os.ErrExist) {
 		fmt.Printf("Failed to create directory [%s]. Error: [%s].\n", outputDir, err.Error())
 	} else {
