@@ -213,3 +213,52 @@ func TestDontRetainModifiedTime(t *testing.T) {
 		})
 	})
 }
+
+// TestFileMerge_InvalidInputDir ensure we get an error if the input dir does not exist
+func TestFileMerge_InvalidInputDir(t *testing.T) {
+	invalidDir := "doesNotExist/"
+	_, err := os.Stat(invalidDir)
+
+	require.Error(t, err)
+
+	inputDirs := []string{invalidDir}
+	require.Error(t, MergeFileDirs(inputDirs, "", false))
+}
+
+// TestCreateOutputDirectory_SuccessfullyCreated ensure the output directory is created properly
+func TestCreateOutputDirectory_SuccessfullyCreated(t *testing.T) {
+	outputDir := "./outputDir"
+	defer os.Remove(outputDir)
+
+	require.NoError(t, CreateOutputDirectory(outputDir))
+}
+
+// TestCreateOutputDirectory_AlreadyExists ensure no error is thrown when the directory already exists.
+func TestCreateOutputDirectory_AlreadyExists(t *testing.T) {
+	outputDir := "./outputDir"
+	require.NoError(t, os.Mkdir(outputDir, DEFAULT_FILE_PERM))
+	defer os.Remove(outputDir)
+
+	require.NoError(t, CreateOutputDirectory(outputDir))
+}
+
+// TestGetContentHash_CannotReadFile ensure an error is returned when we try to get the hash
+// of a file that doesn't exist
+func TestGetContentHash_CannotReadFile(t *testing.T) {
+	file := "doesNotExist.txt"
+	_, _, err := getContentHash(file)
+	require.Error(t, err)
+}
+
+// TestGetOutputPath_FileHasNoExtension ensure that the correct output file path is created even when the
+// provided file has no extension
+func TestGetOutputPath_FileHasNoExtension(t *testing.T) {
+	file := "test"
+	WithTempDir(t, func(dirName string) {
+		_, err := os.Create(filepath.Join(dirName, file))
+		require.NoError(t, err)
+
+		nextFile := getOutputPath(dirName, file)
+		require.Equal(t, file+" (1)", nextFile)
+	})
+}
