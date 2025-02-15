@@ -5,6 +5,7 @@
     `go tool cover -html cover.out -o cover.html`
      -->
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/Kilemonn/Duplicate-File-Remover)](https://goreportcard.com/report/github.com/Kilemonn/Duplicate-File-Remover)
 [![Go Coverage](https://github.com/Kilemonn/Duplicate-File-Remover/wiki/coverage.svg)](https://raw.githack.com/wiki/Kilemonn/Duplicate-File-Remover/coverage.html)
 
 A command-line tool that takes input directories and create an output directory containing only unique files from the provided input directories. The files are determined as being unique based on its content hash.
